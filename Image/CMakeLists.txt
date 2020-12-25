@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-#   Copyright (c) 2019 Charles Carley.
+#   Copyright (c) Charles Carley.
 #
 #   This software is provided 'as-is', without any express or implied
 # warranty. In no event will the authors be held liable for any damages
@@ -17,27 +17,26 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.0)
-project(Image)
+set(TargetName_SOURCE 
+    skImage.h
+    skImage.cpp
+    skPixel.h
+    skPixel.cpp
+)
 
-if (Image_ExternalTarget)
-    set(TargetFolders ${Image_TargetFolders})
-    set(TargetName    ${Image_TargetName})
-    set(TargetGroup   ${Image_TargetGroup})
-else()
-    subdirs(CMake)
-    set(TargetFolders FALSE)
-    set(TargetName Image)
+include_directories(${Utils_INCLUDE} ${FreeImage_INCLUDE})
 
-    set(FreeImage_INCLUDE ${Image_SOURCE_DIR}/External/FreeImage/Source)
-    set(FreeImage_LIBRARY FreeImage)
-    subdirs(External/Utils)
-    subdirs(External/FreeImage)
-    add_definitions(-DFREEIMAGE_LIB)
+add_library(
+    ${TargetName} 
+    ${TargetName_SOURCE}
+)
 
-    set(Utils_INCLUDE ${Image_SOURCE_DIR}/External)
-    set(Utils_LIBRARY Utils)
+target_link_libraries(
+    ${TargetName} 
+    ${Utils_LIBRARY}
+    ${FreeImage_LIBRARY}
+)
 
+if (TargetFolders)
+    set_target_properties(${TargetName} PROPERTIES FOLDER "${TargetGroup}")
 endif()
-
-subdirs(Image)
