@@ -1,0 +1,6 @@
+[submodule "Extern/Utils"]
+	path = Extern/Utils
+	url = https://github.com/CharlesCarley/Utils.git
+[submodule "Extern/FreeImage"]
+	path = Extern/FreeImage
+	url = https://github.com/CharlesCarley/FreeImage.git

@@ -34,11 +34,11 @@ if (MSVC)
         ${PY_FILES}
         ${BAT_FILES}
         ../.clang-format
-        ../.github/workflows/autobuild.yml
     )
-	source_group("CMake"        FILES ${CM_FILES})
-	source_group("Markdown"     FILES ${MD_FILES})
-	source_group("Include"      FILES ${IN_FILES})
+    
+    source_group("CMake"        FILES ${CM_FILES})
+    source_group("Markdown"     FILES ${MD_FILES})
+    source_group("Include"      FILES ${IN_FILES})
     source_group("Python"       FILES ${PY_FILES})
     source_group("Batch"        FILES ${BC_FILES})
 

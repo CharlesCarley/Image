@@ -29,13 +29,13 @@ else()
     set(TargetFolders FALSE)
     set(TargetName Image)
 
-    set(FreeImage_INCLUDE ${Image_SOURCE_DIR}/External/FreeImage/Source)
+    set(FreeImage_INCLUDE ${Image_SOURCE_DIR}/Extern/FreeImage/Source)
     set(FreeImage_LIBRARY FreeImage)
-    subdirs(External/Utils)
-    subdirs(External/FreeImage)
+    subdirs(Extern/Utils)
+    subdirs(Extern/FreeImage)
     add_definitions(-DFREEIMAGE_LIB)
 
-    set(Utils_INCLUDE ${Image_SOURCE_DIR}/External)
+    set(Utils_INCLUDE ${Image_SOURCE_DIR}/Extern)
     set(Utils_LIBRARY Utils)
 
 endif()
