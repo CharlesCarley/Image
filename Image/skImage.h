@@ -89,6 +89,11 @@ public:
         return m_bytes;
     }
 
+    inline SKsize getSizeInBytes(void) const
+    {
+        return m_size;
+    }
+
     inline skPixelFormat getFormat(void) const
     {
         return m_format;
