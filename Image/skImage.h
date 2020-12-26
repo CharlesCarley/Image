@@ -97,6 +97,7 @@ public:
     void clear(const skPixel& pixel) const;
 
     void setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixel);
+    void getPixel(const SKuint32& x, const SKuint32& y, skPixel& pixel);
 
     void fillRect(SKuint32       x,
                   SKuint32       y,
