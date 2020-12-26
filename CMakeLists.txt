@@ -31,6 +31,7 @@ else()
 
     set(FreeImage_INCLUDE ${Image_SOURCE_DIR}/Extern/FreeImage/Source)
     set(FreeImage_LIBRARY FreeImage)
+
     subdirs(Extern/Utils)
     subdirs(Extern/FreeImage)
     add_definitions(-DFREEIMAGE_LIB)
@@ -38,6 +39,7 @@ else()
     set(Utils_INCLUDE ${Image_SOURCE_DIR}/Extern)
     set(Utils_LIBRARY Utils)
 
+    subdirs(Examples)
 endif()
 
 subdirs(Image)

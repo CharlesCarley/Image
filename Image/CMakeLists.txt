@@ -19,12 +19,15 @@
 # ------------------------------------------------------------------------------
 set(TargetName_SOURCE 
     skImage.h
-    skImage.cpp
+    skPalette.h
     skPixel.h
+    
+    skImage.cpp
+    skPalette.cpp
     skPixel.cpp
 )
 
-include_directories(${Utils_INCLUDE} ${FreeImage_INCLUDE})
+include_directories(${Utils_INCLUDE} ${FreeImage_INCLUDE} ../)
 
 add_library(
     ${TargetName} 

@@ -23,7 +23,6 @@
 #include "Utils/skMinMax.h"
 
 
-
 skPixel::skPixel(const SKuint32& col)
 {
     skColorUnion c{};

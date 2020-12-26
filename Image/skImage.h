@@ -49,60 +49,70 @@ private:
               skPixelFormat  dstFmt,
               skPixelFormat  srcFmt);
 
-    SKuint32      getSize(skPixelFormat fmt);
+    SKuint32 getSize(const skPixelFormat& format);
+
+
     skPixelFormat getFormat(SKuint32 bpp);
 
-    void getPixel(skPixel& dest, SKubyte* src, skPixelFormat fmt);
-    void setPixel(SKubyte* dst, const skPixel& src, skPixelFormat fmt);
+    void getPixel(skPixel& dest, const SKubyte* src, skPixelFormat format);
+    void setPixel(SKubyte* dst, const skPixel& src, skPixelFormat format);
+
+
+    inline SKuint32 getBufferPos(const SKuint32& x, const SKuint32& y) const
+    {
+        return (SKuint32)(m_height - 1 - y) * m_pitch + x * m_bpp;
+    }
+
 
 public:
     skImage();
-    skImage(SKuint32 w, SKuint32 h, skPixelFormat fmt);
-    virtual ~skImage();
+    skImage(SKuint32 width, SKuint32 height, skPixelFormat format);
+    ~skImage();
 
-    SK_INLINE SKuint32 getWidth(void)
+    inline SKuint32 getWidth(void) const
     {
         return m_width;
     }
 
-    SK_INLINE SKuint32 getHeight(void)
+    inline SKuint32 getHeight(void) const
     {
         return m_height;
     }
 
-    SK_INLINE SKuint32 getBPP(void)
+    inline SKuint32 getBPP(void) const
     {
         return m_bpp;
     }
 
-    SK_INLINE SKubyte* getBytes(void)
+    inline SKubyte* getBytes(void) const
     {
         return m_bytes;
     }
 
-    SK_INLINE skPixelFormat getFormat(void)
+    inline skPixelFormat getFormat(void) const
     {
         return m_format;
     }
 
-    void clear(const skPixel& pixel);
-    void setPixel(SKuint32 x, SKuint32 y, const skPixel &pixel);
+    void clear(const skPixel& pixel) const;
 
-    void fillRect(SKuint32 x,
-                  SKuint32 y,
-                  SKuint32 width,
-                  SKuint32 height,
+    void setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixel);
+
+    void fillRect(SKuint32       x,
+                  SKuint32       y,
+                  SKuint32       width,
+                  SKuint32       height,
                   const skPixel& col);
 
-    void lineTo(SKint32 x1,
-                SKint32 y1,
-                SKint32 x2,
-                SKint32 y2,
+    void lineTo(SKint32        x1,
+                SKint32        y1,
+                SKint32        x2,
+                SKint32        y2,
                 const skPixel& col);
 
 
-    void save(int fmt, const char* file);
-    void load(int fmt, const char* file);
+    void save(int format, const char* file) const;
+    void load(int format, const char* file);
 
 
     static void initialize();

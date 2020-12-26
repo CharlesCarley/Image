@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------------
-    Copyright (c) 2019 Charles Carley.
+    Copyright (c) Charles Carley.
 
   This software is provided 'as-is', without any express or implied
   warranty. In no event will the authors be held liable for any damages
@@ -20,74 +20,71 @@
 -------------------------------------------------------------------------------
 */
 #include "skImage.h"
-#include <cmath>
 #include "FreeImage.h"
 #include "Utils/skLogger.h"
 #include "Utils/skMemoryUtils.h"
 #include "Utils/skMinMax.h"
-#include "Utils/skPlatformHeaders.h"
-
-#define UINTV32(x) ((x) > 0 && (x) < SK_NPOS32)
-#define GETBUFFERPOS(x, y) (SKuint32)((SKsize)m_height - (y)) * m_pitch + (x)*m_bpp
 
 
 class ImageUtils
 {
 public:
-    static FREE_IMAGE_FORMAT getFormat(int format)
+    static int getFormat(const int format)
     {
-        int out = (int)FREE_IMAGE_FORMAT::FIF_UNKNOWN;
+        int out = (int)FIF_UNKNOWN;
         switch (format)
         {
-        case skImageFormat::IMF_BMP:
-            out = FREE_IMAGE_FORMAT::FIF_BMP;
+        case IMF_BMP:
+            out = FIF_BMP;
             break;
-        case skImageFormat::IMF_JPEG:
-            out = FREE_IMAGE_FORMAT::FIF_JPEG;
+        case IMF_JPEG:
+            out = FIF_JPEG;
             break;
-        case skImageFormat::IMF_PNG:
-            out = FREE_IMAGE_FORMAT::FIF_PNG;
+        case IMF_PNG:
+            out = FIF_PNG;
             break;
-        case skImageFormat::IMF_TGA:
-            out = FREE_IMAGE_FORMAT::FIF_TARGA;
+        case IMF_TGA:
+            out = FIF_TARGA;
             break;
-        case skImageFormat::IMF_XPM:
-            out = FREE_IMAGE_FORMAT::FIF_XPM;
+        case IMF_XPM:
+            out = FIF_XPM;
             break;
         default:
             break;
         }
-        return (FREE_IMAGE_FORMAT)out;
+        return out;
     }
 
 
-    static void clearA(SKubyte* mem, SKsize max, const skPixel& p)
+    static void clearA(SKubyte* mem, const SKsize max, const skPixel& p)
     {
         skMemset(mem, p.a, max);
     }
 
-    static void clearLA(SKubyte* mem, SKsize max, const skPixel& p)
+    static void clearLa(SKubyte* mem, const SKsize max, const skPixel& p)
     {
         if (mem && max > 2)
         {
-            union cpack
+            SKubyte cp[2] = {
+                (SKubyte)(((int)p.r + (int)p.g + (int)p.b) / 3),
+                p.a,
+            };
+
+            SKsize i;
+            for (i = 0; i < max - 1; i += 2)
             {
-                SKubyte  cp[2];
-                SKuint16 i;
-            } pak{};
-
-            pak.cp[0] = (SKubyte)(((int)p.r + (int)p.g + (int)p.b) / 3);
-            pak.cp[1] = p.a;
-
-            auto*        ptr = (SKuint16*)&mem[0];
-            const SKsize sz  = max / 2;
-            SKsize       i;
-            for (i = 0; i < sz; ++i)
-                *ptr++ = pak.i;
+#if SK_ENDIAN == SK_ENDIAN_BIG
+                mem[i]     = cp[0];
+                mem[i + 1] = cp[1];
+#else
+                mem[i + 1] = cp[0];
+                mem[i]     = cp[1];
+#endif
+            }
         }
     }
 
-    static void clearRGB(SKubyte* mem, SKsize max, const skPixel& p)
+    static void clearRgb(SKubyte* mem, const SKsize max, const skPixel& p)
     {
         if (mem && max > 3)
         {
@@ -107,7 +104,7 @@ public:
         }
     }
 
-    static void clearRGBA(SKubyte* mem, SKsize max, const skPixel& p)
+    static void clearRgba(SKubyte* mem, const SKsize max, const skPixel& p)
     {
         if (mem && max > 4)
         {
@@ -120,27 +117,16 @@ public:
                 mem[i + 2] = p.b;
                 mem[i + 3] = p.a;
 #else
-                mem[i]     = p.a;
-                mem[i + 1] = p.r;
-                mem[i + 2] = p.g;
-                mem[i + 3] = p.b;
+                mem[i]     = p.b;
+                mem[i + 1] = p.g;
+                mem[i + 2] = p.r;
+                mem[i + 3] = p.a;
 #endif
             }
         }
     }
 };
 
-
-
-void skImage::initialize()
-{
-    FreeImage_Initialise(true);
-}
-
-void skImage::finalize()
-{
-    FreeImage_DeInitialise();
-}
 
 skImage::skImage() :
     m_width(0),
@@ -149,20 +135,22 @@ skImage::skImage() :
     m_bpp(0),
     m_size(0),
     m_bytes(nullptr),
-    m_bitmap(nullptr),
-    m_format(skPixelFormat::SK_ALPHA)
+    m_format(skPixelFormat::SK_ALPHA),
+    m_bitmap(nullptr)
 {
 }
 
-skImage::skImage(SKuint32 w, SKuint32 h, skPixelFormat fmt) :
-    m_width(w),
-    m_height(h),
+skImage::skImage(const SKuint32      width,
+                 const SKuint32      height,
+                 const skPixelFormat format) :
+    m_width(width),
+    m_height(height),
     m_pitch(0),
     m_bpp(0),
     m_size(0),
     m_bytes(nullptr),
-    m_bitmap(nullptr),
-    m_format(fmt)
+    m_format(format),
+    m_bitmap(nullptr)
 {
     calculateBitsPerPixel();
     allocateBytes();
@@ -178,6 +166,7 @@ void skImage::unloadAndReset()
 {
     if (m_bitmap)
         FreeImage_Unload(m_bitmap);
+
     m_width  = 0;
     m_height = 0;
     m_pitch  = 0;
@@ -233,27 +222,30 @@ void skImage::calculateBitsPerPixel()
     case skPixelFormat::SK_ABGR:
         m_bpp = 4;
         break;
-    default:
+    case skPixelFormat::SK_PF_MAX:
+        m_bpp = 0;
         break;
     }
 }
 
-void skImage::save(int fmt, const char* file)
+void skImage::save(const int format, const char* file) const
 {
-    FREE_IMAGE_FORMAT out = ImageUtils::getFormat(fmt);
+    const int out = ImageUtils::getFormat(format);
+
     if (m_bitmap != nullptr && out != FIF_UNKNOWN && file != nullptr)
-        FreeImage_Save(out, m_bitmap, file);
+        FreeImage_Save((FREE_IMAGE_FORMAT)out, m_bitmap, file);
 }
 
 
-void skImage::load(int fmt, const char* file)
+void skImage::load(const int format, const char* file)
 {
-    FREE_IMAGE_FORMAT out = ImageUtils::getFormat(fmt);
+    const int out = ImageUtils::getFormat(format);
+
     if (out != FIF_UNKNOWN && file != nullptr)
     {
         unloadAndReset();
 
-        m_bitmap = FreeImage_Load(out, file);
+        m_bitmap = FreeImage_Load((FREE_IMAGE_FORMAT)out, file);
         if (m_bitmap != nullptr)
         {
             m_bytes = FreeImage_GetBits(m_bitmap);
@@ -272,13 +264,14 @@ void skImage::load(int fmt, const char* file)
 
 void skImage::allocateBytes()
 {
-    if (!UINTV32(m_width) || !UINTV32(m_height))
+    if (!(m_width > 0 && m_width < SK_NPOS32) ||
+        !(m_height > 0 && m_height < SK_NPOS32))
     {
-        skLogf(LD_ERROR, "Cannot allocate an image with a width or height of 0.\n");
+        skLogf(LD_ERROR, "The specified image dimensions exceed the limit of the data type.\n");
         return;
     }
 
-    if (!UINTV32(m_bpp))
+    if (!(m_bpp > 0 && m_bpp < SK_NPOS32))
     {
         skLogf(LD_ERROR, "Unknown number of bits per pixel.\n");
         return;
@@ -287,49 +280,49 @@ void skImage::allocateBytes()
     if (m_bitmap != nullptr)
         FreeImage_Unload(m_bitmap);
 
-    m_bitmap = FreeImage_Allocate(m_width, m_height, 8 * m_bpp);
+    m_bitmap = FreeImage_Allocate(m_width, m_height, 8 * (int)m_bpp);
     m_size   = (SKsize)m_width * (SKsize)m_height * (SKsize)m_bpp;
-    m_bpp    = FreeImage_GetBPP(m_bitmap);
-    m_bpp /= 8;
-    m_bytes = FreeImage_GetBits(m_bitmap);
+    m_bpp    = FreeImage_GetBPP(m_bitmap) / 8;
+    m_bytes  = FreeImage_GetBits(m_bitmap);
     m_pitch  = FreeImage_GetPitch(m_bitmap);
 }
 
-void skImage::clear(const skPixel& px)
+void skImage::clear(const skPixel& pixel) const
 {
     switch (m_format)
     {
     case skPixelFormat::SK_LUMINANCE:
     case skPixelFormat::SK_ALPHA:
-        ImageUtils::clearA(m_bytes, m_size, px);
+        ImageUtils::clearA(m_bytes, m_size, pixel);
         break;
     case skPixelFormat::SK_LUMINANCE_ALPHA:
-        ImageUtils::clearLA(m_bytes, m_size, px);
+        ImageUtils::clearLa(m_bytes, m_size, pixel);
         break;
     case skPixelFormat::SK_RGB:
     case skPixelFormat::SK_BGR:
-        ImageUtils::clearRGB(m_bytes, m_size, px);
+        ImageUtils::clearRgb(m_bytes, m_size, pixel);
         break;
     case skPixelFormat::SK_RGBA:
     case skPixelFormat::SK_BGRA:
     case skPixelFormat::SK_ARGB:
     case skPixelFormat::SK_ABGR:
-        ImageUtils::clearRGBA(m_bytes, m_size, px);
+        ImageUtils::clearRgba(m_bytes, m_size, pixel);
         break;
-    default:
+    case skPixelFormat::SK_PF_MAX:
         break;
     }
 }
 
 
-void skImage::getPixel(skPixel& dest, SKubyte* src, skPixelFormat fmt)
+void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat format)
 {
     skPixel* rs = &dest;
-    switch (fmt)
+
+    switch (format)
     {
     case skPixelFormat::SK_BGR:
     {
-        auto* value = (skPixelRGB*)src;
+        const auto* value = (const skPixelRGB*)src;
 
         rs->r = value->b;
         rs->g = value->g;
@@ -339,7 +332,7 @@ void skImage::getPixel(skPixel& dest, SKubyte* src, skPixelFormat fmt)
     }
     case skPixelFormat::SK_RGB:
     {
-        auto* value = (skPixelRGB*)src;
+        const auto* value = (const skPixelRGB*)src;
 
         rs->r = value->r;
         rs->g = value->g;
@@ -349,47 +342,47 @@ void skImage::getPixel(skPixel& dest, SKubyte* src, skPixelFormat fmt)
     }
     case skPixelFormat::SK_RGBA:
     {
-        auto* value = (skPixelRGBA*)src;
-        rs->r       = value->r;
-        rs->g       = value->g;
-        rs->b       = value->b;
-        rs->a       = value->a;
+        const auto* value = (const skPixelRGBA*)src;
+        rs->r             = value->r;
+        rs->g             = value->g;
+        rs->b             = value->b;
+        rs->a             = value->a;
         break;
     }
     case skPixelFormat::SK_BGRA:
     {
-        auto* value = (skPixelRGBA*)src;
-        rs->r       = value->b;
-        rs->g       = value->g;
-        rs->b       = value->r;
-        rs->a       = value->a;
+        const auto* value = (const skPixelRGBA*)src;
+        rs->r             = value->b;
+        rs->g             = value->g;
+        rs->b             = value->r;
+        rs->a             = value->a;
         break;
     }
     case skPixelFormat::SK_ARGB:
     {
-        auto* value = (skPixelRGBA*)src;
-        rs->r       = value->a;
-        rs->g       = value->r;
-        rs->b       = value->g;
-        rs->a       = value->b;
+        const auto* value = (const skPixelRGBA*)src;
+        rs->r             = value->a;
+        rs->g             = value->r;
+        rs->b             = value->g;
+        rs->a             = value->b;
         break;
     }
     case skPixelFormat::SK_ABGR:
     {
-        auto* value = (skPixelRGBA*)src;
-        rs->r       = value->a;
-        rs->g       = value->b;
-        rs->b       = value->g;
-        rs->a       = value->r;
+        const auto* value = (const skPixelRGBA*)src;
+        rs->r             = value->a;
+        rs->g             = value->b;
+        rs->b             = value->g;
+        rs->a             = value->r;
         break;
     }
     case skPixelFormat::SK_LUMINANCE_ALPHA:
     {
-        auto* la = (skPixelLA*)src;
-        rs->r    = la->l;
-        rs->g    = la->l;
-        rs->b    = la->l;
-        rs->a    = la->a;
+        const auto* la = (const skPixelLA*)src;
+        rs->r          = la->l;
+        rs->g          = la->l;
+        rs->b          = la->l;
+        rs->a          = la->a;
         break;
     }
     case skPixelFormat::SK_LUMINANCE:
@@ -401,14 +394,14 @@ void skImage::getPixel(skPixel& dest, SKubyte* src, skPixelFormat fmt)
         rs->a = rs->r;
         break;
     }
-    default:
+    case skPixelFormat::SK_PF_MAX:
         break;
     }
 }
 
-void skImage::setPixel(SKubyte* dst, const skPixel& src, skPixelFormat fmt)
+void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat format)
 {
-    switch (fmt)
+    switch (format)
     {
     case skPixelFormat::SK_BGR:
     {
@@ -480,22 +473,23 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, skPixelFormat fmt)
     case skPixelFormat::SK_ALPHA:
         dst[0] = src.a;
         break;
+    case skPixelFormat::SK_PF_MAX:
+        break;
     }
 }
 
 
-void skImage::setPixel(SKuint32 x, SKuint32 y, const skPixel& pixel)
+void skImage::setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixel)
 {
-    const SKuint32 loc = GETBUFFERPOS(x, y);
+    const SKuint32 loc = getBufferPos(x, y);
     if (loc < m_size)
         setPixel(&m_bytes[loc], pixel, m_format);
 }
 
-
-void skImage::fillRect(SKuint32       x,
-                       SKuint32       y,
-                       SKuint32       width,
-                       SKuint32       height,
+void skImage::fillRect(const SKuint32 x,
+                       const SKuint32 y,
+                       const SKuint32 width,
+                       const SKuint32 height,
                        const skPixel& col)
 {
     SKuint32 x0, x1, y0, y1;
@@ -504,18 +498,16 @@ void skImage::fillRect(SKuint32       x,
     y0 = y;
     y1 = y + height;
 
-
     for (SKuint32 ix = x0; ix < x1; ++ix)
     {
         for (SKuint32 iy = y0; iy < y1; ++iy)
         {
-            const SKuint32 loc = GETBUFFERPOS(ix, iy);
-            if (loc < m_size)
+            const SKuint32 loc = getBufferPos(ix, iy);
+            if (loc <= m_size)
                 setPixel(&m_bytes[loc], col, m_format);
         }
     }
 }
-
 
 void skImage::lineTo(SKint32        x1,
                      SKint32        y1,
@@ -528,10 +520,10 @@ void skImage::lineTo(SKint32        x1,
         if (y2 < y1)
             skSwap(y2, y1);
 
-        for (SKint32 iy = y1; iy < y2; ++iy)
+        for (SKint32 iy = y1; iy <= y2; ++iy)
         {
-            const SKuint32 loc = GETBUFFERPOS(x1, iy);
-            if (loc < m_size)
+            const SKuint32 loc = getBufferPos(x1, iy);
+            if (loc <= m_size)
                 setPixel(&m_bytes[loc], col, m_format);
         }
     }
@@ -539,23 +531,83 @@ void skImage::lineTo(SKint32        x1,
     {
         if (x2 < x1)
             skSwap(x2, x1);
-        for (SKint32 ix = x1; ix < x2; ++ix)
+        for (SKint32 ix = x1; ix <= x2; ++ix)
         {
-            const SKuint32 loc = GETBUFFERPOS(ix, y1);
-            if (loc < m_size)
+            const SKuint32 loc = getBufferPos(ix, y1);
+            if (loc <= m_size)
                 setPixel(&m_bytes[loc], col, m_format);
+        }
+    }
+    else if (skABS(y2 - y1) > skABS(x2 - x1))
+    {
+        skSwap(x1, y1);
+        skSwap(x2, y2);
+
+        if (x1 > x2)
+        {
+            skSwap(x1, x2);
+            skSwap(y1, y2);
+        }
+
+        const SKint32 de   = skABS(y2 - y1);
+        const SKint32 sy = y1 > y2 ? -1 : 1;
+        const SKint32 dx   = x2 - x1;
+
+        SKint32 e = -(dx >> 1);
+        SKint32 iy, ix;
+        iy = y1;
+        for (ix = x1; ix <= x2; ++ix)
+        {
+            const SKuint32 loc = getBufferPos(iy, ix);
+            if (loc <= m_size)
+                setPixel(&m_bytes[loc], col, m_format);
+
+            e += de;
+            if (e > 0)
+            {
+                iy += sy;
+                e -= dx;
+            }
+        }
+    }
+    else
+    {
+        if (x1 > x2)
+        {
+            skSwap(x1, x2);
+            skSwap(y1, y2);
+        }
+
+        const SKint32 de   = skABS(y2 - y1);
+        const SKint32 sy = y1 > y2 ? -1 : 1;
+        const SKint32 dx   = x2 - x1;
+
+        SKint32 e = -(dx >> 1);
+        SKint32 iy, ix;
+        iy = y1;
+        for (ix = x1; ix <= x2; ++ix)
+        {
+            const SKuint32 loc = getBufferPos(ix, iy);
+            if (loc <= m_size)
+                setPixel(&m_bytes[loc], col, m_format);
+
+            e += de;
+            if (e > 0)
+            {
+                iy += sy;
+                e -= dx;
+            }
         }
     }
 }
 
 
-
-void skImage::copy(SKubyte*       dst,
-                   const SKubyte* src,
-                   SKuint32       w,
-                   SKuint32       h,
-                   skPixelFormat  dstFmt,
-                   skPixelFormat  srcFmt)
+void skImage::copy(SKubyte*            dst,
+                   const SKubyte*      src,
+                   const SKuint32      w,
+                   const SKuint32      h,
+                   const skPixelFormat dstFmt,
+                   const skPixelFormat srcFmt)
 {
     if (!dst || !src)
         return;
@@ -566,16 +618,17 @@ void skImage::copy(SKubyte*       dst,
         return;
     }
 
-    const SKuint32 sbpp = getSize(srcFmt);
-    const SKuint32 dbpp = getSize(dstFmt);
+    const SKuint32 srcBpp = getSize(srcFmt);
+    const SKuint32 dstBpp = getSize(dstFmt);
 
-    SKubyte *dp, *sp;
+    SKubyte* dp;
     for (SKuint32 y = 0; y < h; y++)
     {
         for (SKuint32 x = 0; x < w; x++)
         {
-            sp = (SKubyte*)&src[(y * w + x) * sbpp];
-            dp = (SKubyte*)&dst[(y * w + x) * dbpp];
+            const auto* sp = (const SKubyte*)&src[(y * w + x) * srcBpp];
+
+            dp = (SKubyte*)&dst[(y * w + x) * dstBpp];
 
             skPixel rs(0, 0, 0, 255);
             getPixel(rs, sp, srcFmt);
@@ -584,9 +637,9 @@ void skImage::copy(SKubyte*       dst,
     }
 }
 
-SKuint32 skImage::getSize(skPixelFormat fmt)
+SKuint32 skImage::getSize(const skPixelFormat& format)
 {
-    switch (fmt)
+    switch (format)
     {
     case skPixelFormat::SK_BGR:
     case skPixelFormat::SK_RGB:
@@ -601,12 +654,13 @@ SKuint32 skImage::getSize(skPixelFormat fmt)
     case skPixelFormat::SK_LUMINANCE:
     case skPixelFormat::SK_ALPHA:
         return 1;
-    default:
+    case skPixelFormat::SK_PF_MAX:
         return 0;
     }
+    return 0;
 }
 
-skPixelFormat skImage::getFormat(SKuint32 bpp)
+skPixelFormat skImage::getFormat(const SKuint32 bpp)
 {
     switch (bpp)
     {
@@ -620,4 +674,15 @@ skPixelFormat skImage::getFormat(SKuint32 bpp)
     default:
         return skPixelFormat::SK_ALPHA;
     }
+}
+
+
+void skImage::initialize()
+{
+    FreeImage_Initialise(true);
+}
+
+void skImage::finalize()
+{
+    FreeImage_DeInitialise();
 }

@@ -13,18 +13,19 @@ AlwaysBreakTemplateDeclarations:     true
 AlignConsecutiveDeclarations:        true
 AlignConsecutiveAssignments:         true
 AllowShortIfStatementsOnASingleLine: false
-AllowShortFunctionsOnASingleLine:    false
+AllowShortFunctionsOnASingleLine:    true
 
-MaxEmptyLinesToKeep:                 3
+MaxEmptyLinesToKeep:                2
 KeepEmptyLinesAtTheStartOfBlocks:   false
 
 
-IndentPPDirectives:   None
-IncludeBlocks:        Merge
-AccessModifierOffset: -4
-NamespaceIndentation: All
-PointerAlignment:     Left
-SpaceBeforeParens:    ControlStatements
+IndentPPDirectives:     None
+IncludeBlocks:          Merge
+AccessModifierOffset:   -4
+NamespaceIndentation:   All
+PointerAlignment:       Left
+DerivePointerAlignment: false
+SpaceBeforeParens:      ControlStatements
 
 Standard: Auto
 AlignTrailingComments: true
@@ -34,13 +35,13 @@ BinPackArguments:  false
 
 AllowShortLoopsOnASingleLine: false
 
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
-BreakConstructorInitializersBeforeComma: true
-BreakConstructorInitializers: AfterColon
-ConstructorInitializerIndentWidth: 4
+ConstructorInitializerAllOnOneLineOrOnePerLine:     true
+BreakConstructorInitializersBeforeComma:            true
+BreakConstructorInitializers:                       AfterColon
+ConstructorInitializerIndentWidth:                  4
 
-BreakBeforeTernaryOperators: true
-AllowShortCaseLabelsOnASingleLine: false
-AlignEscapedNewlines: Left
+BreakBeforeTernaryOperators:                        true
+AllowShortCaseLabelsOnASingleLine:                  false
+AlignEscapedNewlines:                               Left
 
 ...

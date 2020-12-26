@@ -49,7 +49,6 @@ enum skImageFormat
 };
 
 
-
 typedef union skColorUnion
 {
     SKubyte  b[4];
@@ -103,7 +102,7 @@ public:
         r(0),
         g(0),
         b(0),
-        a(0)
+        a(255)
     {
     }
 
@@ -116,17 +115,15 @@ public:
     }
 
 
-    skPixel(const SKubyte r, const SKubyte g, const SKubyte b, const SKubyte a) :
-        r(r),
-        g(g),
-        b(b),
-        a(a)
+    skPixel(const SKubyte pr, const SKubyte pg, const SKubyte pb, const SKubyte pa) :
+        r(pr),
+        g(pg),
+        b(pb),
+        a(pa)
     {
     }
 
-
-    skPixel(const SKuint32& col);
-
+    explicit skPixel(const SKuint32& col);
 
     void add(const skPixel& px);
     void sub(const skPixel& px);
@@ -137,7 +134,6 @@ public:
 public:
     SKubyte r, g, b, a;
 };
-
 
 
 #endif  //_skPixel_h_
