@@ -34,12 +34,11 @@ else()
 
     subdirs(Extern/Utils)
     subdirs(Extern/FreeImage)
-    add_definitions(-DFREEIMAGE_LIB)
-
     set(Utils_INCLUDE ${Image_SOURCE_DIR}/Extern)
     set(Utils_LIBRARY Utils)
 
     subdirs(Examples)
 endif()
 
+add_definitions(-DFREEIMAGE_LIB)
 subdirs(Image)
