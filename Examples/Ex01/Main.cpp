@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 {
     skImage::initialize();
     {
-        skImage ima(140, 40, skPixelFormat::SK_RGBA);
+        skImage ima(140, 40, skPixelFormat::SK_RGB);
         ima.clear(skPalette::Grey02);
 
         ima.fillRect(0, 0, 20, 20, skPalette::Red);
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
         ima.fillRect(80, 20, 10, 20, skPalette::Grey02);
         ima.fillRect(90, 20, 10, 20, skPalette::Grey01);
 
-        ima.save(IMF_BMP, "test.bmp");
+        ima.save(IMF_JPEG, "test.jpg");
     }
     {
         skImage ima(512, 512, skPixelFormat::SK_RGBA);
@@ -85,12 +85,12 @@ int main(int argc, char** argv)
         ima.lineTo(ima.getWidth() - 1, 0, ima.getWidth() - 1, ima.getHeight(), skPalette::Yellow);
         ima.lineTo(0, ima.getHeight() - 1, ima.getWidth(), ima.getHeight() - 1, skPalette::Green);
 
-        ima.save(IMF_BMP, "test1.bmp");
+        ima.save(IMF_PNG, "test1.png");
     }
     {
-        skImage ima(512, 512, skPixelFormat::SK_RGBA);
+        skImage ima(512, 512, skPixelFormat::SK_RGB);
         ima.clear(skPalette::Grey09);
-        ima.save(IMF_BMP, "test2.bmp");
+        ima.save(IMF_JPEG, "test2.jpg");
     }
     skImage::finalize();
     return 0;

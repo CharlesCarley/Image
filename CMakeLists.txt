@@ -25,17 +25,23 @@ if (Image_ExternalTarget)
     set(TargetName    ${Image_TargetName})
     set(TargetGroup   ${Image_TargetGroup})
 else()
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
     subdirs(CMake)
-    set(TargetFolders FALSE)
     set(TargetName Image)
 
     set(FreeImage_INCLUDE ${Image_SOURCE_DIR}/Extern/FreeImage/Source)
     set(FreeImage_LIBRARY FreeImage)
-
     subdirs(Extern/Utils)
-    subdirs(Extern/FreeImage)
     set(Utils_INCLUDE ${Image_SOURCE_DIR}/Extern)
     set(Utils_LIBRARY Utils)
+
+
+    set(FreeImage_ExternalTarget TRUE)
+    set(FreeImage_TargetFolders  TRUE)
+    set(FreeImage_TargetName     FreeImage)
+    set(FreeImage_TargetGroup    "Extern/FreeImage")
+    subdirs(Extern/FreeImage)
 
     subdirs(Examples)
 endif()

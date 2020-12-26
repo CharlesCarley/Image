@@ -44,7 +44,9 @@ enum skImageFormat
     IMF_TGA,
     IMF_BMP,
     IMF_JPEG,
+    IMF_J2K,
     IMF_PNG,
+    IMF_PSD,
     IMF_XPM,
 };
 

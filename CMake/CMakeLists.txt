@@ -50,5 +50,5 @@ if (MSVC)
     )
 
     add_custom_target(ALL_CMAKE ALL SOURCES ${CMAKE_FILES})
-
+    set_target_properties(ALL_CMAKE PROPERTIES FOLDER "CMakePredefinedTargets")
 endif()

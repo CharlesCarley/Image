@@ -24,6 +24,7 @@
 #include "Utils/skLogger.h"
 #include "Utils/skMemoryUtils.h"
 #include "Utils/skMinMax.h"
+#include "Utils/skPlatformHeaders.h"
 
 
 class ImageUtils
@@ -40,8 +41,14 @@ public:
         case IMF_JPEG:
             out = FIF_JPEG;
             break;
+        case IMF_J2K:
+            out = FIF_J2K;
+            break;
         case IMF_PNG:
             out = FIF_PNG;
+            break;
+        case IMF_PSD:
+            out = FIF_PSD;
             break;
         case IMF_TGA:
             out = FIF_TARGA;
@@ -54,7 +61,6 @@ public:
         }
         return out;
     }
-
 
     static void clearA(SKubyte* mem, const SKsize max, const skPixel& p)
     {
@@ -692,9 +698,20 @@ skPixelFormat skImage::getFormat(const SKuint32 bpp)
     }
 }
 
+void FreeImage_MessageProc(int fif, const char* msg)
+{
+    if (msg)
+    {
+        if (skLogger::getSingletonPtr())
+            skLogd(LD_ERROR, msg);
+        else
+            printf("-- %s\n", msg);
+    }
+}
 
 void skImage::initialize()
 {
+    FreeImage_SetOutputMessage((FreeImage_OutputMessageFunction)FreeImage_MessageProc);
     FreeImage_Initialise(true);
 }
 
