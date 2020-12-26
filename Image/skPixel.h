@@ -127,6 +127,10 @@ public:
 
     explicit skPixel(const SKuint32& col);
 
+    double lum() const;
+
+
+    void set(const skPixel& px);
     void add(const skPixel& px);
     void sub(const skPixel& px);
     void mul(const skPixel& px);

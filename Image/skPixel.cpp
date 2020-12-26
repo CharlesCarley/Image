@@ -33,7 +33,19 @@ skPixel::skPixel(const SKuint32& col)
     a   = c.b[SK_aIdx];
 }
 
+double skPixel::lum() const
+{
+    return ((double)r + (double)g + (double)b) / 3.0;
+}
 
+
+void skPixel::set(const skPixel& px)
+{
+    r = (SKuint8)skMin<SKint16>(px.r, 255);
+    g = (SKuint8)skMin<SKint16>(px.g, 255);
+    b = (SKuint8)skMin<SKint16>(px.b, 255);
+    a = (SKuint8)skMin<SKint16>(px.a, 255);
+}
 void skPixel::add(const skPixel& px)
 {
     SKint16 tr = r, tg = g, tb = b, ta = a;

@@ -492,6 +492,14 @@ void skImage::setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixe
         setPixel(&m_bytes[loc], pixel, m_format);
 }
 
+
+void skImage::getPixel(const SKuint32& x, const SKuint32& y, skPixel& pixel)
+{
+    const SKuint32 loc = getBufferPos(x, y);
+    if (loc < m_size)
+        getPixel(pixel, &m_bytes[loc], m_format);
+}
+
 void skImage::fillRect(const SKuint32 x,
                        const SKuint32 y,
                        const SKuint32 width,
