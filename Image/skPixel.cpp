@@ -95,8 +95,8 @@ void skPixel::mix(const skPixel& px, double f)
 
     d1 = d;
     d2 = 1.0 - d;
-    r  = (SKuint8)((d2 * (double)r) + (double)px.r * d1);
-    g  = (SKuint8)((d2 * (double)g) + (double)px.g * d1);
-    b  = (SKuint8)((d2 * (double)b) + (double)px.b * d1);
-    a  = (SKuint8)((d2 * (double)a) + (double)px.a * d1);
+    r  = (SKuint8)(d2 * (double)r + (double)px.r * d1);
+    g  = (SKuint8)(d2 * (double)g + (double)px.g * d1);
+    b  = (SKuint8)(d2 * (double)b + (double)px.b * d1);
+    a  = (SKuint8)(d2 * (double)a + (double)px.a * d1);
 }
