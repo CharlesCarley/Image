@@ -1,6 +1,6 @@
 # Image
 
-A simple image drawing utility library
+A very basic image IO utility library.
 
 ## Building
 

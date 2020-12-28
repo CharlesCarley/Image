@@ -529,22 +529,7 @@ void skImage::lineTo(SKint32        x1,
                      SKint32        y2,
                      const skPixel& col)
 {
-    // DDA with float
-    // dx = x2-x1
-    // dy = y2-y1
-    // if abs dx > abs dy then
-    //   step = abs dx
-    // else then
-    //   step = abs dy
-    // xi = dx / step
-    // yi = dy / step
-    //
-    // for range to step
-    //   put xi, yi
-    //
-    //   x1 = x1 + xi
-    //   y1 = y1 + yi
-
+ 
     if (x2 == x1)
     {
         if (y2 < y1)
