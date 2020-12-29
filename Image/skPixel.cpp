@@ -25,7 +25,7 @@
 
 skPixel::skPixel(const SKuint32& col)
 {
-    skColorUnion c{};
+    skColorUnion c;
     c.i = col;
     r   = c.b[SK_rIdx];
     g   = c.b[SK_gIdx];
@@ -46,6 +46,8 @@ void skPixel::set(const skPixel& px)
     b = (SKuint8)skMin<SKint16>(px.b, 255);
     a = (SKuint8)skMin<SKint16>(px.a, 255);
 }
+
+
 void skPixel::add(const skPixel& px)
 {
     SKint16 tr = r, tg = g, tb = b, ta = a;
@@ -99,14 +101,14 @@ void skPixel::div(const skPixel& px)
 
 void skPixel::mix(const skPixel& px, double f)
 {
-    double d = (double)f, d1, d2;
+    double d = (double)f;
     if (d < 0)
         d = 0;
     if (d > 1)
         d = 1;
 
-    d1 = d;
-    d2 = 1.0 - d;
+    const double d1 = d;
+    const double d2 = 1.0 - d;
     r  = (SKuint8)(d2 * (double)r + (double)px.r * d1);
     g  = (SKuint8)(d2 * (double)g + (double)px.g * d1);
     b  = (SKuint8)(d2 * (double)b + (double)px.b * d1);

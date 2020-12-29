@@ -47,15 +47,15 @@ private:
               SKuint32       w,
               SKuint32       h,
               skPixelFormat  dstFmt,
-              skPixelFormat  srcFmt);
+              skPixelFormat  srcFmt) const;
 
-    SKuint32 getSize(const skPixelFormat& format);
+    static SKuint32 getSize(const skPixelFormat& format);
 
 
-    skPixelFormat getFormat(SKuint32 bpp);
+    static skPixelFormat getFormat(SKuint32 bpp);
 
-    void getPixel(skPixel& dest, const SKubyte* src, skPixelFormat format);
-    void setPixel(SKubyte* dst, const skPixel& src, skPixelFormat format);
+    static void        getPixel(skPixel& dest, const SKubyte* src, skPixelFormat format);
+    static void setPixel(SKubyte* dst, const skPixel& src, skPixelFormat format);
 
 
     inline SKuint32 getBufferPos(const SKuint32& x, const SKuint32& y) const

@@ -622,7 +622,7 @@ void skImage::copy(SKubyte*            dst,
                    const SKuint32      w,
                    const SKuint32      h,
                    const skPixelFormat dstFmt,
-                   const skPixelFormat srcFmt)
+                   const skPixelFormat srcFmt) const
 {
     if (!dst || !src)
         return;
@@ -691,7 +691,7 @@ skPixelFormat skImage::getFormat(const SKuint32 bpp)
     }
 }
 
-void FreeImage_MessageProc(int fif, const char* msg)
+void FreeImage_MessageProc(int, const char* msg)
 {
     if (msg)
     {
