@@ -116,7 +116,6 @@ public:
     {
     }
 
-
     skPixel(const SKubyte pr, const SKubyte pg, const SKubyte pb, const SKubyte pa) :
         r(pr),
         g(pg),
@@ -128,7 +127,6 @@ public:
     explicit skPixel(const SKuint32& col);
 
     double lum() const;
-
 
     void set(const skPixel& px);
     void add(const skPixel& px);
