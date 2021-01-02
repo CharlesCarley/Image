@@ -101,20 +101,20 @@ public:
 
     void clear(const skPixel& pixel) const;
 
-    void setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixel);
-    void getPixel(const SKuint32& x, const SKuint32& y, skPixel& pixel);
+    void setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixel) const;
+    void getPixel(const SKuint32& x, const SKuint32& y, skPixel& pixel) const;
 
     void fillRect(SKuint32       x,
                   SKuint32       y,
                   SKuint32       width,
                   SKuint32       height,
-                  const skPixel& col);
+                  const skPixel& col) const;
 
     void lineTo(SKint32        x1,
                 SKint32        y1,
                 SKint32        x2,
                 SKint32        y2,
-                const skPixel& col);
+                const skPixel& col) const;
 
 
     void save(int format, const char* file) const;

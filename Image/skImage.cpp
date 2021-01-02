@@ -485,7 +485,7 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat for
 }
 
 
-void skImage::setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixel)
+void skImage::setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixel) const
 {
     const SKuint32 loc = getBufferPos(x, y);
     if (loc < m_size)
@@ -493,7 +493,7 @@ void skImage::setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixe
 }
 
 
-void skImage::getPixel(const SKuint32& x, const SKuint32& y, skPixel& pixel)
+void skImage::getPixel(const SKuint32& x, const SKuint32& y, skPixel& pixel) const
 {
     const SKuint32 loc = getBufferPos(x, y);
     if (loc < m_size)
@@ -504,7 +504,7 @@ void skImage::fillRect(const SKuint32 x,
                        const SKuint32 y,
                        const SKuint32 width,
                        const SKuint32 height,
-                       const skPixel& col)
+                       const skPixel& col) const
 {
     SKuint32 x0, x1, y0, y1;
     x0 = x;
@@ -527,9 +527,8 @@ void skImage::lineTo(SKint32        x1,
                      SKint32        y1,
                      SKint32        x2,
                      SKint32        y2,
-                     const skPixel& col)
+                     const skPixel& col) const
 {
- 
     if (x2 == x1)
     {
         if (y2 < y1)
