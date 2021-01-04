@@ -58,7 +58,7 @@ private:
     static void setPixel(SKubyte* dst, const skPixel& src, skPixelFormat format);
 
 
-    inline SKuint32 getBufferPos(const SKuint32& x, const SKuint32& y) const
+    SKuint32 getBufferPos(const SKuint32& x, const SKuint32& y) const
     {
         return (SKuint32)(m_height - 1 - y) * m_pitch + x * m_bpp;
     }
@@ -69,32 +69,37 @@ public:
     skImage(SKuint32 width, SKuint32 height, skPixelFormat format);
     ~skImage();
 
-    inline SKuint32 getWidth(void) const
+    SKuint32 getWidth(void) const
     {
         return m_width;
     }
 
-    inline SKuint32 getHeight(void) const
+    SKuint32 getHeight(void) const
     {
         return m_height;
     }
 
-    inline SKuint32 getBPP(void) const
+    SKuint32 getPitch(void) const
+    {
+        return m_pitch;
+    }
+
+    SKuint32 getBPP(void) const
     {
         return m_bpp;
     }
 
-    inline SKubyte* getBytes(void) const
+    SKubyte* getBytes(void) const
     {
         return m_bytes;
     }
 
-    inline SKsize getSizeInBytes(void) const
+    SKsize getSizeInBytes(void) const
     {
         return m_size;
     }
 
-    inline skPixelFormat getFormat(void) const
+    skPixelFormat getFormat(void) const
     {
         return m_format;
     }
