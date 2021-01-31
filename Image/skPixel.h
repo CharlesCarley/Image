@@ -39,6 +39,7 @@ enum class skPixelFormat
     SK_PF_MAX,
 };
 
+// duplicated in Graphics
 enum skImageFormat
 {
     IMF_TGA,
