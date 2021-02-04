@@ -328,7 +328,7 @@ void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat fo
     {
     case skPixelFormat::SK_BGR:
     {
-        const auto* value = (const skPixelRGB*)src;
+        const skPixelRGB* value = (const skPixelRGB*)src;
 
         rs->r = value->b;
         rs->g = value->g;
@@ -338,7 +338,7 @@ void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat fo
     }
     case skPixelFormat::SK_RGB:
     {
-        const auto* value = (const skPixelRGB*)src;
+        const skPixelRGB* value = (const skPixelRGB*)src;
 
         rs->r = value->r;
         rs->g = value->g;
@@ -348,7 +348,7 @@ void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat fo
     }
     case skPixelFormat::SK_RGBA:
     {
-        const auto* value = (const skPixelRGBA*)src;
+        const skPixelRGBA* value = (const skPixelRGBA*)src;
         rs->r             = value->r;
         rs->g             = value->g;
         rs->b             = value->b;
@@ -357,7 +357,7 @@ void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat fo
     }
     case skPixelFormat::SK_BGRA:
     {
-        const auto* value = (const skPixelRGBA*)src;
+        const skPixelRGBA* value = (const skPixelRGBA*)src;
         rs->r             = value->b;
         rs->g             = value->g;
         rs->b             = value->r;
@@ -366,7 +366,7 @@ void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat fo
     }
     case skPixelFormat::SK_ARGB:
     {
-        const auto* value = (const skPixelRGBA*)src;
+        const skPixelRGBA* value = (const skPixelRGBA*)src;
         rs->r             = value->a;
         rs->g             = value->r;
         rs->b             = value->g;
@@ -375,7 +375,7 @@ void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat fo
     }
     case skPixelFormat::SK_ABGR:
     {
-        const auto* value = (const skPixelRGBA*)src;
+        const skPixelRGBA* value = (const skPixelRGBA*)src;
         rs->r             = value->a;
         rs->g             = value->b;
         rs->b             = value->g;
@@ -384,7 +384,7 @@ void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat fo
     }
     case skPixelFormat::SK_LUMINANCE_ALPHA:
     {
-        const auto* la = (const skPixelLA*)src;
+        const skPixelLA* la = (const skPixelLA*)src;
         rs->r          = la->l;
         rs->g          = la->l;
         rs->b          = la->l;
@@ -411,7 +411,7 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat for
     {
     case skPixelFormat::SK_BGR:
     {
-        auto* p = (skPixelRGB*)dst;
+        skPixelRGB* p = (skPixelRGB*)dst;
         p->b    = src.r;
         p->g    = src.g;
         p->r    = src.b;
@@ -419,7 +419,7 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat for
     }
     case skPixelFormat::SK_RGB:
     {
-        auto* p = (skPixelRGB*)dst;
+        skPixelRGB* p = (skPixelRGB*)dst;
         p->r    = src.r;
         p->g    = src.g;
         p->b    = src.b;
@@ -427,7 +427,7 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat for
     }
     case skPixelFormat::SK_RGBA:
     {
-        auto* p = (skPixelRGBA*)dst;
+        skPixelRGBA* p = (skPixelRGBA*)dst;
         p->r    = src.r;
         p->g    = src.g;
         p->b    = src.b;
@@ -436,7 +436,7 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat for
     }
     case skPixelFormat::SK_BGRA:
     {
-        auto* p = (skPixelRGBA*)dst;
+        skPixelRGBA* p = (skPixelRGBA*)dst;
         p->b    = src.r;
         p->g    = src.g;
         p->r    = src.b;
@@ -445,7 +445,7 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat for
     }
     case skPixelFormat::SK_ARGB:
     {
-        auto* p = (skPixelRGBA*)dst;
+        skPixelRGBA* p = (skPixelRGBA*)dst;
         p->a    = src.r;
         p->r    = src.g;
         p->g    = src.b;
@@ -454,7 +454,7 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat for
     }
     case skPixelFormat::SK_ABGR:
     {
-        auto* p = (skPixelRGBA*)dst;
+        skPixelRGBA* p = (skPixelRGBA*)dst;
         p->a    = src.r;
         p->b    = src.g;
         p->g    = src.b;
@@ -463,7 +463,7 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat for
     }
     case skPixelFormat::SK_LUMINANCE_ALPHA:
     {
-        auto* p = (skPixelLA*)dst;
+        skPixelLA* p = (skPixelLA*)dst;
 
         int lc = src.r;
         lc += src.g;
@@ -640,7 +640,7 @@ void skImage::copy(SKubyte*            dst,
     {
         for (SKuint32 x = 0; x < w; x++)
         {
-            const auto* sp = (const SKubyte*)&src[(y * w + x) * srcBpp];
+            const SKubyte* sp = (const SKubyte*)&src[(y * w + x) * srcBpp];
 
             dp = (SKubyte*)&dst[(y * w + x) * dstBpp];
 
