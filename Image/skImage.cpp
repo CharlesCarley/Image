@@ -349,46 +349,46 @@ void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat fo
     case skPixelFormat::SK_RGBA:
     {
         const skPixelRGBA* value = (const skPixelRGBA*)src;
-        rs->r             = value->r;
-        rs->g             = value->g;
-        rs->b             = value->b;
-        rs->a             = value->a;
+        rs->r                    = value->r;
+        rs->g                    = value->g;
+        rs->b                    = value->b;
+        rs->a                    = value->a;
         break;
     }
     case skPixelFormat::SK_BGRA:
     {
         const skPixelRGBA* value = (const skPixelRGBA*)src;
-        rs->r             = value->b;
-        rs->g             = value->g;
-        rs->b             = value->r;
-        rs->a             = value->a;
+        rs->r                    = value->b;
+        rs->g                    = value->g;
+        rs->b                    = value->r;
+        rs->a                    = value->a;
         break;
     }
     case skPixelFormat::SK_ARGB:
     {
         const skPixelRGBA* value = (const skPixelRGBA*)src;
-        rs->r             = value->a;
-        rs->g             = value->r;
-        rs->b             = value->g;
-        rs->a             = value->b;
+        rs->r                    = value->a;
+        rs->g                    = value->r;
+        rs->b                    = value->g;
+        rs->a                    = value->b;
         break;
     }
     case skPixelFormat::SK_ABGR:
     {
         const skPixelRGBA* value = (const skPixelRGBA*)src;
-        rs->r             = value->a;
-        rs->g             = value->b;
-        rs->b             = value->g;
-        rs->a             = value->r;
+        rs->r                    = value->a;
+        rs->g                    = value->b;
+        rs->b                    = value->g;
+        rs->a                    = value->r;
         break;
     }
     case skPixelFormat::SK_LUMINANCE_ALPHA:
     {
         const skPixelLA* la = (const skPixelLA*)src;
-        rs->r          = la->l;
-        rs->g          = la->l;
-        rs->b          = la->l;
-        rs->a          = la->a;
+        rs->r               = la->l;
+        rs->g               = la->l;
+        rs->b               = la->l;
+        rs->a               = la->a;
         break;
     }
     case skPixelFormat::SK_LUMINANCE:
@@ -412,53 +412,53 @@ void skImage::setPixel(SKubyte* dst, const skPixel& src, const skPixelFormat for
     case skPixelFormat::SK_BGR:
     {
         skPixelRGB* p = (skPixelRGB*)dst;
-        p->b    = src.r;
-        p->g    = src.g;
-        p->r    = src.b;
+        p->b          = src.r;
+        p->g          = src.g;
+        p->r          = src.b;
         break;
     }
     case skPixelFormat::SK_RGB:
     {
         skPixelRGB* p = (skPixelRGB*)dst;
-        p->r    = src.r;
-        p->g    = src.g;
-        p->b    = src.b;
+        p->r          = src.r;
+        p->g          = src.g;
+        p->b          = src.b;
         break;
     }
     case skPixelFormat::SK_RGBA:
     {
         skPixelRGBA* p = (skPixelRGBA*)dst;
-        p->r    = src.r;
-        p->g    = src.g;
-        p->b    = src.b;
-        p->a    = src.a;
+        p->r           = src.r;
+        p->g           = src.g;
+        p->b           = src.b;
+        p->a           = src.a;
         break;
     }
     case skPixelFormat::SK_BGRA:
     {
         skPixelRGBA* p = (skPixelRGBA*)dst;
-        p->b    = src.r;
-        p->g    = src.g;
-        p->r    = src.b;
-        p->a    = src.a;
+        p->b           = src.r;
+        p->g           = src.g;
+        p->r           = src.b;
+        p->a           = src.a;
         break;
     }
     case skPixelFormat::SK_ARGB:
     {
         skPixelRGBA* p = (skPixelRGBA*)dst;
-        p->a    = src.r;
-        p->r    = src.g;
-        p->g    = src.b;
-        p->b    = src.a;
+        p->a           = src.r;
+        p->r           = src.g;
+        p->g           = src.b;
+        p->b           = src.a;
         break;
     }
     case skPixelFormat::SK_ABGR:
     {
         skPixelRGBA* p = (skPixelRGBA*)dst;
-        p->a    = src.r;
-        p->b    = src.g;
-        p->g    = src.b;
-        p->r    = src.a;
+        p->a           = src.r;
+        p->b           = src.g;
+        p->g           = src.b;
+        p->r           = src.a;
         break;
     }
     case skPixelFormat::SK_LUMINANCE_ALPHA:
@@ -521,6 +521,25 @@ void skImage::fillRect(const SKuint32 x,
                 setPixel(&m_bytes[loc], col, m_format);
         }
     }
+}
+
+
+void skImage::strokeRect(SKuint32       x,
+                         SKuint32       y,
+                         SKuint32       width,
+                         SKuint32       height,
+                         const skPixel& col) const
+{
+    SKuint32 x1, y1, x2, y2;
+    x1 = x;
+    y1 = y;
+    x2 = x1 + width;
+    y2 = y1 + height;
+
+    lineTo(x1, y1, x2, y1, col);
+    lineTo(x2, y1, x2, y2, col);
+    lineTo(x2, y2, x1, y2, col);
+    lineTo(x1, y2, x1, y1, col);
 }
 
 void skImage::lineTo(SKint32        x1,

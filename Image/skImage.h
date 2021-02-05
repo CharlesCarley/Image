@@ -54,7 +54,7 @@ private:
 
     static skPixelFormat getFormat(SKuint32 bpp);
 
-    static void        getPixel(skPixel& dest, const SKubyte* src, skPixelFormat format);
+    static void getPixel(skPixel& dest, const SKubyte* src, skPixelFormat format);
     static void setPixel(SKubyte* dst, const skPixel& src, skPixelFormat format);
 
 
@@ -114,6 +114,12 @@ public:
                   SKuint32       width,
                   SKuint32       height,
                   const skPixel& col) const;
+
+    void strokeRect(SKuint32       x,
+                    SKuint32       y,
+                    SKuint32       width,
+                    SKuint32       height,
+                    const skPixel& col) const;
 
     void lineTo(SKint32        x1,
                 SKint32        y1,
