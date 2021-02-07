@@ -19,54 +19,74 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#ifndef _skPixel_h_
-#define _skPixel_h_
+#ifndef _skImageTypes_h_
+#define _skImageTypes_h_
 
-#include "Image/skImageTypes.h"
 #include "Utils/Config/skConfig.h"
-struct FIBITMAP;
+SK_ST_C;
 
-class skPixel
+
+typedef enum SKPixelFormat
 {
-public:
-    skPixel() :
-        r(0),
-        g(0),
-        b(0),
-        a(255)
-    {
-    }
+    SK_ALPHA,
+    SK_LUMINANCE,
+    SK_LUMINANCE_ALPHA,
+    SK_BGR,
+    SK_RGB,
+    SK_RGBA,
+    SK_BGRA,
+    SK_ARGB,
+    SK_ABGR,
+    SK_PF_MAX,
+} skPixelFormat;
 
-    skPixel(const skPixel& rhs) :
-        r(rhs.r),
-        g(rhs.g),
-        b(rhs.b),
-        a(rhs.a)
-    {
-    }
 
-    skPixel(const SKubyte pr, const SKubyte pg, const SKubyte pb, const SKubyte pa) :
-        r(pr),
-        g(pg),
-        b(pb),
-        a(pa)
-    {
-    }
+typedef union skColorUnion
+{
+    SKubyte  b[4];
+    SKuint32 i;
+} skColorUnion;
 
-    explicit skPixel(const SKuint32& col);
+#if SK_ENDIAN == SK_ENDIAN_BIG
+#define SK_rIdx 0
+#define SK_gIdx 1
+#define SK_bIdx 2
+#define SK_aIdx 3
+#else
+#define SK_rIdx 3
+#define SK_gIdx 2
+#define SK_bIdx 1
+#define SK_aIdx 0
+#endif
 
-    double lum() const;
 
-    void set(const skPixel& px);
-    void add(const skPixel& px);
-    void sub(const skPixel& px);
-    void mul(const skPixel& px);
-    void div(const skPixel& px);
-    void mix(const skPixel& px, double f);
+typedef struct skPixelLA
+{
+#if SK_ENDIAN == SK_ENDIAN_BIG
+    SKubyte l, a;
+#else
+    SKubyte a, l;
+#endif
+} skPixelLA;
 
-public:
+typedef struct skPixelRGB
+{
+#if SK_ENDIAN == SK_ENDIAN_BIG
+    SKubyte r, g, b;
+#else
+    SKubyte b, g, r;
+#endif
+} skPixelRGB;
+
+typedef struct skPixelRGBA
+{
+#if SK_ENDIAN == SK_ENDIAN_BIG
     SKubyte r, g, b, a;
-};
+#else
+    SKubyte b, g, r, a;
+#endif
+} skPixelRGBA;
 
+SK_EN_C;
 
-#endif  //_skPixel_h_
+#endif  //_skImageTypes_h_

@@ -21,6 +21,7 @@ set(TargetName_SOURCE
     skImage.h
     skPalette.h
     skPixel.h
+    skImageTypes.h
     
     skImage.cpp
     skPalette.cpp

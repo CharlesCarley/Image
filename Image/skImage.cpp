@@ -35,25 +35,25 @@ public:
         int out = (int)FIF_UNKNOWN;
         switch (format)
         {
-        case IMF_BMP:
+        case FIF_BMP:
             out = FIF_BMP;
             break;
-        case IMF_JPEG:
+        case FIF_JPEG:
             out = FIF_JPEG;
             break;
-        case IMF_J2K:
+        case FIF_J2K:
             out = FIF_J2K;
             break;
-        case IMF_PNG:
+        case FIF_PNG:
             out = FIF_PNG;
             break;
-        case IMF_PSD:
+        case FIF_PSD:
             out = FIF_PSD;
             break;
-        case IMF_TGA:
+        case FIF_TARGA:
             out = FIF_TARGA;
             break;
-        case IMF_XPM:
+        case FIF_XPM:
             out = FIF_XPM;
             break;
         default:
@@ -234,18 +234,20 @@ void skImage::calculateBitsPerPixel()
     }
 }
 
-void skImage::save(const int format, const char* file) const
+void skImage::save(const char* file) const
 {
-    const int out = ImageUtils::getFormat(format);
+    int       fmt = FreeImage_GetFIFFromFilename(file);
+    const int out = ImageUtils::getFormat(fmt);
 
     if (m_bitmap != nullptr && out != FIF_UNKNOWN && file != nullptr)
         FreeImage_Save((FREE_IMAGE_FORMAT)out, m_bitmap, file);
 }
 
 
-void skImage::load(const int format, const char* file)
+bool skImage::load(const char* file)
 {
-    const int out = ImageUtils::getFormat(format);
+    int       fmt = FreeImage_GetFIFFromFilename(file);
+    const int out = ImageUtils::getFormat(fmt);
 
     if (out != FIF_UNKNOWN && file != nullptr)
     {
@@ -264,8 +266,10 @@ void skImage::load(const int format, const char* file)
             m_pitch  = FreeImage_GetPitch(m_bitmap);
 
             m_size = (SKsize)m_width * (SKsize)m_height * (SKsize)m_bpp;
+            return true;
         }
     }
+    return false;
 }
 
 void skImage::allocateBytes()

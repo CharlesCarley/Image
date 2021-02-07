@@ -22,8 +22,9 @@
 #ifndef _skImage_h_
 #define _skImage_h_
 
+#include "Image/skPixel.h"
 #include "Utils/Config/skConfig.h"
-#include "skPixel.h"
+#include "Utils/skDisableWarnings.h"
 
 class skImage
 {
@@ -38,8 +39,11 @@ private:
     FIBITMAP*     m_bitmap;
 
     void unloadAndReset();
+
     void allocateBytes();
+
     void calculateBitsPerPixel();
+
     void calculateFormat();
 
     void copy(SKubyte*       dst,
@@ -55,6 +59,7 @@ private:
     static skPixelFormat getFormat(SKuint32 bpp);
 
     static void getPixel(skPixel& dest, const SKubyte* src, skPixelFormat format);
+
     static void setPixel(SKubyte* dst, const skPixel& src, skPixelFormat format);
 
 
@@ -107,6 +112,7 @@ public:
     void clear(const skPixel& pixel) const;
 
     void setPixel(const SKuint32& x, const SKuint32& y, const skPixel& pixel) const;
+
     void getPixel(const SKuint32& x, const SKuint32& y, skPixel& pixel) const;
 
     void fillRect(SKuint32       x,
@@ -128,11 +134,12 @@ public:
                 const skPixel& col) const;
 
 
-    void save(int format, const char* file) const;
-    void load(int format, const char* file);
+    void save(const char* file) const;
 
+    bool load(const char* file);
 
     static void initialize();
+
     static void finalize();
 };
 
