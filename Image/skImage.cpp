@@ -732,8 +732,8 @@ void skImage::initialize()
 
 void skImage::finalize()
 {
-    // Metadata/FreeImageTag will show up as memory leaks because 
+    // Metadata/FreeImageTag will show up as memory leaks because
     // TagLib::instance is defined as a static instance on
-    // the stack which then needs an atexit ~TagLib call. 
+    // the stack which then needs an atexit ~TagLib call.
     FreeImage_DeInitialise();
 }
