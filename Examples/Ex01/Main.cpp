@@ -23,11 +23,11 @@
 #include "Image/skPalette.h"
 
 
-int main(int argc, char** argv)
+int main(int, char**)
 {
     skImage::initialize();
     {
-        skImage ima(140, 40, skPixelFormat::SK_RGB);
+        const skImage ima(140, 40, SK_RGB);
         ima.clear(skPalette::Grey02);
 
         ima.fillRect(0, 0, 20, 20, skPalette::Red);
@@ -52,15 +52,15 @@ int main(int argc, char** argv)
         ima.save("test.bmp");
     }
     {
-        skImage ima(512, 512, skPixelFormat::SK_RGBA);
+        const skImage ima(512, 512, SK_RGBA);
         ima.clear(skPalette::Grey02);
 
 
         int pointsY[16] = {15, 5, 17, 56, 32, 77, 200, 63, 99, 45, 88, 123, 500, 300, 100, 7};
 
-        int stp = 512 / 15;
-        int j   = 0;
-        int fx = 0, fy = 0, tx, ty;
+        const int stp = 512 / 15;
+        int       j   = 0;
+        int       fx = 0, fy = 0;
         for (int i = 0; i < 16; ++i, j += stp)
         {
             if (i == 0)
@@ -71,11 +71,10 @@ int main(int argc, char** argv)
             }
             else
             {
-                tx = j;
-                ty = 512 - pointsY[i];
+                const int tx = j;
+                const int ty = 512 - pointsY[i];
 
                 ima.lineTo(fx, fy, tx, ty, skPalette::Green);
-
                 fx = tx;
                 fy = ty;
             }
@@ -88,10 +87,10 @@ int main(int argc, char** argv)
         ima.save("test1.png");
     }
     {
-        skImage ima(512, 512, skPixelFormat::SK_RGB);
+        const skImage ima(512, 512, SK_RGB);
         ima.clear(skPalette::Grey09);
 
-        ima.strokeRect(20,20,200,200, skPalette::Black);
+        ima.strokeRect(20, 20, 200, 200, skPalette::Black);
         ima.save("test2.jpg");
     }
     skImage::finalize();

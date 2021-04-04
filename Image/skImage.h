@@ -46,22 +46,6 @@ private:
 
     void calculateFormat();
 
-    void copy(SKubyte*       dst,
-              const SKubyte* src,
-              SKuint32       w,
-              SKuint32       h,
-              skPixelFormat  dstFmt,
-              skPixelFormat  srcFmt) const;
-
-    static SKuint32 getSize(const skPixelFormat& format);
-
-
-    static skPixelFormat getFormat(SKuint32 bpp);
-
-    static void getPixel(skPixel& dest, const SKubyte* src, skPixelFormat format);
-
-    static void setPixel(SKubyte* dst, const skPixel& src, skPixelFormat format);
-
 
     SKuint32 getBufferPos(const SKuint32& x, const SKuint32& y) const
     {
@@ -133,6 +117,7 @@ public:
                 SKint32        y2,
                 const skPixel& col) const;
 
+    skImage* convertToFormat(const skPixelFormat& format) const;
 
     void save(const char* file) const;
 
@@ -141,6 +126,22 @@ public:
     static void initialize();
 
     static void finalize();
+
+
+    static void copy(SKubyte*       dst,
+                     const SKubyte* src,
+                     SKuint32       w,
+                     SKuint32       h,
+                     skPixelFormat  dstFmt,
+                     skPixelFormat  srcFmt);
+
+    static SKuint32 getSize(const skPixelFormat& format);
+
+    static skPixelFormat getFormat(SKuint32 bpp);
+
+    static void getPixel(skPixel& dest, const SKubyte* src, skPixelFormat format);
+
+    static void setPixel(SKubyte* dst, const skPixel& src, skPixelFormat format);
 };
 
 #endif  //_skImage_h_
