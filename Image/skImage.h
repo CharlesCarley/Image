@@ -52,6 +52,7 @@ private:
         return (SKuint32)(m_height - 1 - y) * m_pitch + x * m_bpp;
     }
 
+    void _updateFromBitmap();
 
 public:
     skImage();
@@ -122,6 +123,9 @@ public:
     void save(const char* file) const;
 
     bool load(const char* file);
+
+    bool loadFromMemory(void *mem, const SKsize& size);
+
 
     static void initialize();
 

@@ -239,6 +239,22 @@ void skImage::save(const char* file) const
         FreeImage_Save((FREE_IMAGE_FORMAT)out, m_bitmap, file);
 }
 
+void skImage::_updateFromBitmap()
+{
+    if (!m_bitmap)
+        return;
+
+    m_bytes = FreeImage_GetBits(m_bitmap);
+    m_bpp   = FreeImage_GetBPP(m_bitmap);
+    m_bpp /= 8;
+    calculateFormat();
+
+    m_width  = FreeImage_GetWidth(m_bitmap);
+    m_height = FreeImage_GetHeight(m_bitmap);
+    m_pitch  = FreeImage_GetPitch(m_bitmap);
+
+    m_size = (SKsize)m_width * (SKsize)m_height * (SKsize)m_bpp;
+}
 
 bool skImage::load(const char* file)
 {
@@ -252,16 +268,33 @@ bool skImage::load(const char* file)
         m_bitmap = FreeImage_Load((FREE_IMAGE_FORMAT)out, file);
         if (m_bitmap != nullptr)
         {
-            m_bytes = FreeImage_GetBits(m_bitmap);
-            m_bpp   = FreeImage_GetBPP(m_bitmap);
-            m_bpp /= 8;
-            calculateFormat();
+            _updateFromBitmap();
+            return true;
+        }
+    }
+    return false;
+}
 
-            m_width  = FreeImage_GetWidth(m_bitmap);
-            m_height = FreeImage_GetHeight(m_bitmap);
-            m_pitch  = FreeImage_GetPitch(m_bitmap);
 
-            m_size = (SKsize)m_width * (SKsize)m_height * (SKsize)m_bpp;
+bool skImage::loadFromMemory(void* mem, const SKsize& size)
+{
+    if (!mem || size <= 0)
+        return false;
+
+
+    FIMEMORY memStream = {mem};
+
+    const int fmt = FreeImage_GetFileTypeFromMemory(&memStream, (int)size);
+    const int out = ImageUtils::getFormat(fmt);
+
+    if (out != FIF_UNKNOWN)
+    {
+        unloadAndReset();
+
+        m_bitmap = FreeImage_LoadFromMemory((FREE_IMAGE_FORMAT)out, &memStream);
+        if (m_bitmap != nullptr)
+        {
+            _updateFromBitmap();
             return true;
         }
     }
@@ -329,10 +362,10 @@ void skImage::getPixel(skPixel& dest, const SKubyte* src, const skPixelFormat fo
     case SK_BGR:
     {
         const skPixelRGB* value = (const skPixelRGB*)src;
-        rs->r = value->b;
-        rs->g = value->g;
-        rs->b = value->r;
-        rs->a = 255;
+        rs->r                   = value->b;
+        rs->g                   = value->g;
+        rs->b                   = value->r;
+        rs->a                   = 255;
         break;
     }
     case SK_RGB:
