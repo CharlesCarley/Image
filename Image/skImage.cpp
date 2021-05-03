@@ -137,6 +137,7 @@ skImage::skImage() :
     m_bpp(0),
     m_size(0),
     m_bytes(nullptr),
+    m_flip(true),
     m_format(SK_ALPHA),
     m_bitmap(nullptr)
 {
@@ -151,6 +152,7 @@ skImage::skImage(const SKuint32      width,
     m_bpp(0),
     m_size(0),
     m_bytes(nullptr),
+    m_flip(true),
     m_format(format),
     m_bitmap(nullptr)
 {

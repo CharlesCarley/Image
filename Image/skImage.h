@@ -35,6 +35,7 @@ private:
     SKuint32      m_bpp;
     SKsize        m_size;
     SKubyte*      m_bytes;
+    bool          m_flip;
     skPixelFormat m_format;
     FIBITMAP*     m_bitmap;
 
@@ -49,6 +50,19 @@ private:
 
     SKuint32 getBufferPos(const SKuint32& x, const SKuint32& y) const
     {
+        if (m_flip)
+            return getBufferPosFlipped(x, y);
+        return getBufferPosNormal(x, y);
+    }
+
+
+    SKuint32 getBufferPosNormal(const SKuint32& x, const SKuint32& y) const
+    {
+        return (SKuint32)y * m_pitch + x * m_bpp;
+    }
+
+    SKuint32 getBufferPosFlipped(const SKuint32& x, const SKuint32& y) const
+    {
         return (SKuint32)(m_height - 1 - y) * m_pitch + x * m_bpp;
     }
 
@@ -59,40 +73,46 @@ public:
     skImage(SKuint32 width, SKuint32 height, skPixelFormat format);
     ~skImage();
 
-    SKuint32 getWidth(void) const
+    SKuint32 getWidth() const
     {
         return m_width;
     }
 
-    SKuint32 getHeight(void) const
+    SKuint32 getHeight() const
     {
         return m_height;
     }
 
-    SKuint32 getPitch(void) const
+    SKuint32 getPitch() const
     {
         return m_pitch;
     }
 
-    SKuint32 getBPP(void) const
+    SKuint32 getBPP() const
     {
         return m_bpp;
     }
 
-    SKubyte* getBytes(void) const
+    SKubyte* getBytes() const
     {
         return m_bytes;
     }
 
-    SKsize getSizeInBytes(void) const
+    SKsize getSizeInBytes() const
     {
         return m_size;
     }
 
-    skPixelFormat getFormat(void) const
+    skPixelFormat getFormat() const
     {
         return m_format;
     }
+
+    void setFlipY(bool v)
+    {
+        m_flip = v;
+    }
+
 
     void clear(const skPixel& pixel) const;
 

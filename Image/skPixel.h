@@ -37,13 +37,7 @@ public:
     {
     }
 
-    skPixel(const skPixel& rhs) :
-        r(rhs.r),
-        g(rhs.g),
-        b(rhs.b),
-        a(rhs.a)
-    {
-    }
+    skPixel(const skPixel& rhs) = default;
 
     skPixel(const SKubyte pr, const SKubyte pg, const SKubyte pb, const SKubyte pa) :
         r(pr),
